@@ -1,0 +1,1 @@
+docker-compose -f "docker_container/face-recognition/docker-compose.yml" up -d --build 

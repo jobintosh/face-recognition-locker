@@ -1,0 +1,48 @@
+services:
+
+  app:
+    build:
+      context: .
+    container_name: face_locker_app
+    ports:
+      - "80:5000"
+    environment:
+      - TZ=Asia/Bangkok
+    restart: always
+    volumes:
+      - .:/root
+
+  face-db:
+    image: mariadb:11.2
+    container_name: facedb_app
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: facelockerprojectpassword1234@#
+      TZ: Asia/Bangkok
+    volumes:
+      - ./face-db:/var/lib/mysql
+
+  phpmyadmin-faceapp:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-faceapp
+    restart: always
+    environment:
+      PMA_HOST: face-db
+    ports:
+      - "8080:80"
+
+  lineapi:
+    build:
+      context: ./ 
+      dockerfile: open-line
+    restart: always  
+    environment:
+      TZ: Asia/Bangkok
+
+  lineapi2:
+    build:
+      context: ./ 
+      dockerfile: reed-check
+    restart: always 
+    environment:
+      TZ: Asia/Bangkok

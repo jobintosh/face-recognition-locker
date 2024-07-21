@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "head.html" %}
+    <style>
+        /* Style for the footer */
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa; /* Adjust the background color as needed */
+            text-align: center;
+            padding: 10px 0; /* Adjust the padding as needed */
+        }
+        .link-as-text {
+            text-decoration: none; /* Remove underline */
+            color: inherit; /* Inherit the color from the parent element (black by default) */
+            cursor: text; /* Change cursor style to text (no pointer) */
+        }
+    </style>
+</head>
+<body>
+
+{% include "navbar.html" %}
+
+
+<section class="py-1">
+    <div class="row mt-5">
+        <div class="col-lg-8 offset-lg-2">
+            <h3>Personnel Data</h3>
+            <hr>
+            <div class="row">
+                <div class="col-md-auto">
+                    <a href="/addprsn" type="button" class="btn btn-success btn-lg"><b>Add Personnel</b></a>
+                </div>
+                <div class="col-sm">
+                </div>
+                <div class="col-md-auto">
+                    <a href="/fr_page" type="button" class="btn btn-warning btn-lg"><b>Face Recognition</b></a>
+                </div>
+            </div>
+
+            <br>
+        <!-- ... (previous HTML code) ... -->
+
+        <table class="table table-white table-hover" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Person Id</th>
+                    <th>Name</th>
+                    <th>Locker No</th>
+                    <!-- <th>Active</th> -->
+                    <th>Added</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                    <tr>
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                        <td>{{ item[2] }}</td>
+                        <!-- <td>{{ item[3] }}</td> -->
+                        <td>{{ item[4] }}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ item[0] }}">Edit</button>
+        
+                            <!-- Delete Button -->
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ item[0] }}">Delete</button>
+                        </td>
+                    </tr>
+        
+                    <!-- Edit Modal -->
+                    <div class="modal fade" id="editModal{{ item[0] }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Edit Person Data</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Add a form here to edit the data -->
+                                    <form action="/edit/{{ item[0] }}" method="POST">
+                                        <!-- Include the person's ID in the form URL for identifying the person to edit -->
+                                        <input type="hidden" name="person_id" value="{{ item[0] }}">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" value="{{ item[1] }}">
+                                        </div>
+                                        <!-- Add input fields for other data (e.g., locker number, active, etc.) -->
+                                        <div class="form-group">
+                                            <label for="locker">Locker No</label>
+                                            <input type="text" class="form-control" id="locker" name="locker" value="{{ item[2] }}">
+                                        </div>
+                                        <!-- ... Add input fields for other data ... -->
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Edit Modal -->
+        
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal{{ item[0] }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you certain you want to delete this record? </p>
+                                    <p>Please note that deleting this data might result in errors and affect functionality.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <!-- Add a link to the delete route with the person_id as a parameter -->
+                                    <a href="/delete/{{ item[0] }}" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Delete Modal -->
+                {% endfor %}
+            </tbody>
+        </table>
+
+<!-- ... (rest of the HTML code) ... -->
+
+        </div>
+    </div>
+</section>
+
+<div class="footer">
+    <a href="https://www.linkedin.com/in/tharathorn/" target="_blank" class="link-as-text">
+        <span>All right reserved © by JOBINTOSH</span>
+        <span> 💻</span>
+    </a>
+</div>
+
+
+</body>
+</html>

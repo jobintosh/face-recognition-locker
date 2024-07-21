@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include "head.html" %}
+  
+</head>
+
+<body>
+  {% include "navbar.html" %}
+
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6" style="display: flex;">
+            <div style="width: 500px; height: 500px;">
+                <h1>Camera</h1>
+                <video id="camera-stream" autoplay style="max-width: 100%; max-height: 100%;"></video>
+            </div>
+        </div>
+        <div class="col-md-6" style="display: flex;">
+            <div style="width: 500px; height: 500px;">
+                <h1>Recognized Faces</h1>
+                <div id="imageContainer">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <div class="container">
+    <h3 class="text-center">Today Scan</h3>
+    <!-- Center and lower the "Clear Data" button -->
+    <div class="text-center mb-3">
+        <button id="clearTableBtn" class="btn btn-danger">Clear Data</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Locker No</th>
+                <th>scanned</th>
+            </tr>
+        </thead>
+        <tbody id="scandata">
+        </tbody>
+    </table>
+</div>
+
+
+ 
+<script type="text/javascript">
+    $(document).ready(function() {
+        let lastcnt = 0;
+        let cnt;
+        let maxRows = 5; // Set the maximum number of rows to display
+
+        // Function to load data into the table
+        function loadTableData() {
+            $.ajax({
+                url: '/loadData',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var tbody = $("#scandata");
+                    tbody.empty(); // Clear the existing table data
+
+                    // Loop through the JSON response and limit the number of rows
+                    var rowsToShow = response.response.slice(0, maxRows);
+
+                    // Append the rows to the table body
+                    $.each(rowsToShow, function(index, item) {
+                        var row = $('<tr>'); // Create a new table row
+
+                        // Assuming the JSON structure matches the expected format
+                        row.append('<td>' + item[2] + '</td>'); // Name
+                        row.append('<td>' + item[3] + '</td>'); // Locker No
+                        row.append('<td>' + item[4] + '</td>'); // Added
+
+                        // Append the row to the table body
+                        tbody.append(row);
+                    });
+                },
+                error: function(result) {
+                    console.log('Error fetching data:', result);
+                }
+            });
+        }
+
+        // Add click event listener to the Clear Data button
+        $("#clearTableBtn").click(function() {
+            clearTable();
+        });
+
+        // Load table data initially
+        loadTableData();
+
+        // Function to clear the table
+        function clearTable() {
+            var tbody = $("#scandata");
+            tbody.empty(); // Clear the table data
+        }
+
+        // Function to periodically check for new scans
+        function checkForNewScans() {
+            $.ajax({
+                url: '/countTodayScan',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    cnt = data.rowcount;
+                    if (cnt > lastcnt) {
+                        // New scans detected, reload the table
+                        loadTableData();
+                    }
+                    lastcnt = cnt;
+                },
+                error: function(result) {
+                    console.log('Error counting today scans:', result);
+                }
+            });
+        }
+
+        // Periodically check for new scans (every 10 seconds)
+        setInterval(checkForNewScans, 10000);
+    });
+</script>
+</div>
+
+
+</body>
+<script>
+  const recognizeURL = "{{ url_for('recognize_v2') }}";
+</script>
+<script src="{{ url_for('static', filename='js/detect.js') }}"></script>
+
+</body>
+
+</html>

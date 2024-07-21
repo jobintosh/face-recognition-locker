@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Person</title>
+</head>
+<body>
+    <h1>Edit Person Data</h1>
+    <form method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ person.name }}"><br><br>
+        
+        <label for="locker">Locker No:</label>
+        <input type="text" id="locker" name="locker" value="{{ person.locker }}"><br><br>
+        
+        <!-- Add an "Edit Date" input field -->
+        <label for="editDate">Edit Date:</label>
+        <input type="date" id="editDate" name="editDate" value="{{ person.edit_date }}"><br><br>
+        
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>

@@ -1,0 +1,17 @@
+FROM pypy:3
+WORKDIR /root
+
+COPY ["./notification/open.py" , "./notification/warning.py","/root/"] 
+
+RUN apt-get update -y \
+    && apt-get install -y python3-dev build-essential libssl-dev libffi-dev
+
+RUN pip3 install --upgrade pip setuptools wheel
+
+RUN pip3 install --upgrade pip \
+    && pip3 install requests pymysql line-bot-sdk
+
+COPY . /root
+RUN chmod -R 777 /root
+
+CMD [ "python3", "open.py"]
